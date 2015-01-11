@@ -1,0 +1,86 @@
+POB Hotel Reservation Notice
+%br
+Hotel:
+= @booking.hotel.code
+= @booking.hotel.name
+%br
+Booking ID:
+= @booking.id
+%hr
+- total = 0
+- @booking.room_stays.each do |r|
+  Room:
+  = r.inv_code
+  %br
+  Number of units:
+  = r.qty
+  %br
+  Check in:
+  = r.start_on
+  %br
+  Check out:
+  = r.end_on
+  %br
+  Price:
+  - sub_total= 0
+  %br
+  - r.room_stay_details.each do |d|
+    = nbsp(5)
+    = d.stay_on.strftime('%a %b %e, %Y')
+    - rate = d.rate
+    - sub_total += d.price
+    Rate
+    = num(d.rate)
+    Price
+    = num(d.price)
+    THB
+    %br
+  Sub Total:
+  = num(sub_total)
+  - total += sub_total
+  THB
+  %br
+%hr
+Total:
+= num(total)
+THB
+%br
+Hotel Information:
+- contact = @booking.hotel.contact_infos.last
+- if contact
+  %br
+  = nbsp 5
+  Hotel:
+  = @booking.hotel.name
+  %br
+  = nbsp 5
+  Address:
+  = contact.address
+  ,
+  = contact.city
+  ,
+  = contact.state
+  ,
+  = contact.zip
+  ,
+  = contact.country
+  %br
+  = nbsp 5
+  Phone:
+  = contact.phone_number
+  %br
+  = nbsp 5
+  Email:
+  = contact.email
+%br
+%hr
+Disclaimer
+%br
+Phuketcity.com does not take any way responsiblity for any damage, 
+loss, disadvantage, harm or injury caused by using this web site, 
+applications or the presented services. The service is provided on an 
+"as is" basis without warranties of any kind, either express or implied, 
+including, but not limited to, warranties of title or implied warranties 
+of merchantability or fitness for a particular purpose, other than those 
+warranties which are implied by and incapable of exclusion, restriction 
+or modification under the laws applicable to this agreement.

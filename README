@@ -1,0 +1,20 @@
+= pob-ws
+
+== on mac server
+  psql must use -h 127.0.0.1
+  backup from heroku
+  heroku pgbackups:capture
+  
+
+
+== หลักการและเหตุผล
+
+
+== วัตถุประสงค์
+
+
+== เป้าหมาย
+
+
+== ขอบเขตการดำเนินโครงการ
+

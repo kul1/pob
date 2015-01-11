@@ -1,0 +1,12 @@
+%h3= "รายนามผู้ใช้รวม #{@users.count-1} บัญชี เรียงตามรหัสผู้ใช้"
+= will_paginate @users, :class=>'flickr_pagination'
+%table{:width=>"100%"}
+  %tr{:style=>"color:white; background-color:#aaa;"}
+    %th รหัสผู้ใช้
+    %th ชื่อ
+  - @users.each do |u|
+    - next if u.login=='anonymous'
+    %tr
+      %td= u.login
+      %td= u.full_name
+= will_paginate @users, :class=>'flickr_pagination'

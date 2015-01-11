@@ -1,0 +1,24 @@
+%h3= "รายงานการจองโรงแรม"
+%div(style='text-align:right;')
+  = link_to image_tag('pdf.jpg'), {:action=> 'booking_report', :format=>'pdf'}, :target=>'_blank'
+= will_paginate @bookings, :class=>'flickr_pagination', :params=>{:q=>@q}
+
+%table{:width=>"100%"}
+  %tr{:style=>"color:white; background-color:#6A6A6A;"}
+    %th ลำดับ
+    %th วันที่จอง
+    %th โรงแรม
+    %th ลูกค้า
+    %th วันที่เข้าพัก
+  - i = 1
+  - @bookings.each do |booking|
+    - next unless booking.hotel
+    - doc = Nokogiri::XML(booking.reservation)
+    - customer= doc.xpath('//Customer')
+    %tr
+      %td= i
+      %td= date_thai booking.created_at
+      %td= booking.hotel.name
+      %td= "#{(customer/'NamePrefix').text} #{(customer/'GivenName').text} #{(customer/'Surname').text}"
+      %td= date_thai booking.start_on, :date_only=>true
+    - i += 1

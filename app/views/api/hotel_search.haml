@@ -1,0 +1,45 @@
+!!! XML
+%OTA_HotelSearchRS{"xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance", |
+  "xmlns"=>"http://www.opentravel.org/OTA/2003/05", |
+  "xsi:schemaLocation"=>"http://www.opentravel.org/OTA/2003/05 HotelSearchRS.xsd", |
+  :TimeStamp=>Time.now.strftime('%FT%T'), |
+  :Target=>TARGET, :Version=>"1.001", :SequenceNmbr=>"1"} |
+  
+  - if @err
+    %Errors
+      %Error{:Type=>@err_type}
+        = @err
+  - else
+    %Success
+    %Properties
+      - @count = 0
+      - @hotels.each do |hotel|
+        - break if (@limit && (@limit <= @count))
+        - cover_stay = cover_stay_range(hotel, @start_on, @end_on, @number_of_units)
+        /- next if mobile? && @start_on && !cover_stay
+        - @count += 1
+        %Property{:HotelCode=>hotel.code, :HotelName=>hotel.name, :HotelCodeContext=>hotel.hotel_code_context, :Description=>hotel.description, :Latitude=>hotel.lat, :Longitude=>hotel.lng, :Rating=>hotel.rating}
+          - contact= hotel.contact_infos.last
+          %ContactInfo{:AddressLine=>contact.address, :CityName=>contact.city, :PostalCode=>contact.zip, :StateProv=>contact.state, :CountryName=>contact.country, :PhoneNumber=>contact.phone_number }
+          - if @poi_coord
+            %RelativePosition{:Direction=>direction(@poi_coord.heading_to hotel.ll), :Distance=>@poi_coord.distance_to(hotel.ll, :formula=>:flat), :DistanceUnitName=>"Kilometers", :Latitude=>hotel.lat, :Longitude=>hotel.lng}
+          %MultimediaDescriptions
+            - hotel.multimedia_descriptions.each do |m|
+              = m.xml
+          - if hotel.doc
+            - doc = Nokogiri::XML(hotel.doc)
+            - policies= (doc/'Policies')
+            - unless policies.empty?
+              = policies.to_s
+          - unless hotel.facility.blank?
+            = hotel.facility
+          - if @start_on && cover_stay
+            - avails= hotel.availabilities.all(:conditions=>['limit_on>=? AND limit_on<=?',@start_on,@end_on-1],:order=>'limit_on, inv_code')
+            %Availabilities
+              - avails.each do |availability|
+                - if availability.max
+                  %Availability{:Date=>availability.limit_on.to_s, :InvCode=>availability.inv_code, :Rate=> availability.rate, :RatePlanCode=> availability.rate_plan_code, :Limit=>availability.booking_limit, :MaxOccupancy=>availability.max}
+                - else
+                  %Availability{:Date=>availability.limit_on.to_s, :InvCode=>availability.inv_code, :Rate=> availability.rate, :RatePlanCode=> availability.rate_plan_code, :Limit=>availability.booking_limit}
+                    = availability.avail.multimedias
+    = @criteria.to_s

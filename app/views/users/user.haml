@@ -1,0 +1,23 @@
+%h3= @u.full_name
+%style
+  td.field-name {width:100px;}
+%table(width="100%")
+  %tr
+    %td(class="field-name") รหัสผู้ใช้
+    %td(colspan="2")= @u.login
+  %tr
+    %td(class="field-name") รหัสเชื่อมต่อ api
+    %td(colspan="2")= @u.api_key
+  %tr
+    %td(class="field-name") บริษัท
+    %td(colspan="2")= @u.org
+  %tr
+    %td(class="field-name") โทรศัพท์
+    %td(colspan="2")= @u.cellphone
+  %tr
+    %td(class="field-name") อีเมลล์
+    %td(colspan="2")= @u.email
+  %tr
+    %td(class="field-name") สิทธิการใช้งาน
+    %td(colspan="2")= @u.role
+%p

@@ -1,0 +1,15 @@
+= will_paginate @log_requests, :class=>'flickr_pagination'
+%table{:width=>"100%"}
+  %tr{:style=>"color:white; background-color:#6A6A6A;"}
+    %th(style="width:100px;") วันที่
+    %th id
+    %th uri
+    %th ip
+    %th ข้อความ
+  - @log_requests.each do |l|
+    %tr
+      %td= date_thai l.created_at
+      %td= l.id
+      %td= truncate l.request_uri, 30
+      %td= l.ip
+      %td= link_to html_escape(truncate(l.content, 80)), :action=>'view_rq', :id=>l.id

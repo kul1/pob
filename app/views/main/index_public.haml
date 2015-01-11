@@ -1,0 +1,121 @@
+:css
+  .url {color: blue;}
+
+%h4 message OTA_Ping
+.url= "http://#{request.host_with_port}/api/ping"
+%h4 message OTA_HotelDescriptiveContentNotif
+.url= "http://#{request.host_with_port}/api/hotel_descriptive_content_notif"
+.note
+  &raquo; must have valid hotel email address under ContactInfo/Email path
+  %br
+  = link_to "sample RQ", "/OTA/OTA_HotelDescriptiveContentNotifRQ1.xml"
+%b Example (Ruby)
+.example response= RestClient.post "http://#{request.host_with_port}/api/hotel_descriptive_content_notif", xml
+%h4 message OTA_HotelAvailNotif
+.url= "http://#{request.host_with_port}/api/hotel_avail_notif"
+.note 
+  &raquo; one property at a time
+  %br
+  &raquo; MaxOccupancy attribute can be specified in StatusApplicationControl tag (optional)
+  %br
+  &raquo; Rate attribute is required
+  %br
+  = link_to "sample RQ", "/OTA/OTA_HotelAvailNotifRQ.xml"
+%h4 message OTA_HotelSearch
+.url= "http://#{request.host_with_port}/api/hotel_search"
+.note
+  &raquo; can request multiple properties
+  %br
+  &raquo; first priority is RefPoint, then HotelRef (search by name), then Position
+  %br
+  = link_to "sample RQ", "/OTA/OTA_HotelSearchRQ1.xml"
+  %br
+  = link_to "sample RQ with Limit", "/OTA/OTA_HotelSearchRQ3.xml"
+  %br
+  = link_to "sample RQ search by name", "/OTA/OTA_HotelSearchRQ_by_name.xml"
+  %br
+  = link_to "sample RQ search by name with position", "/OTA/OTA_HotelSearchRQ_by_name_with_position.xml"
+  %br
+  = link_to "sample RQ search with filter", "/OTA/OTA_HotelSearchRQ_by_name.xml"
+  %br
+  = link_to "sample RS", "/OTA/OTA_HotelSearchRS2.xml"
+%h4 Rating
+.note
+  &raquo; specify in <b>HotelDescriptiveContentNotifRQ</b> in first tag <b>Award</b> attribute <b>Rating</b>
+  %br
+  &raquo; invalid or unspecified Rating will be 0
+  %br
+  &raquo; in HotelSearch &lt;Sort By='Rating'/&gt; will sort ascendance
+  %br
+  &raquo; in HotelSearch &lt;Sort By='Rating DESC'/&gt; will sort descendance
+  %br
+  &raquo; Rating Sort cannot be combined with Price Sort, The first <b>Sort</b> takes precedence
+  %br
+  &raquo; in <b>HotelSearchRS</b> Rating is indicated by <b>Rating</b> attribute in <b>Property</b> tag
+%h4 message OTA_HotelRes
+.url= "http://#{request.host_with_port}/api/hotel_res"
+.note
+  &raquo; must include customer's email
+  = link_to "sample RQ", "/OTA/OTA_HotelResRQ1.xml"
+  = link_to "sample RS", "/OTA/OTA_HotelResRS2.xml"
+%h4 message POB_HotelAvail
+.url= "http://#{request.host_with_port}/api/hotel_avail"
+.note
+  &raquo; can have multiple properties
+  = link_to "sample RQ", "/OTA/POB_HotelAvailRQ.xml"
+  = link_to "sample RS", "/OTA/POB_HotelAvailRS.xml"
+%h4 message POB_HotelBook
+.url=  "http://#{request.host_with_port}/api/hotel_book"
+.note
+  &raquo; one HotelCode at a time, the time frame is based on reservation start date
+  %br
+  = link_to "sample RQ", "/OTA/POB_HotelBookRQ.xml"
+  = link_to "sample RS", "/OTA/POB_HotelBookRS.xml"
+%h4 message POB_HotelBookID
+.url=  "http://#{request.host_with_port}/api/hotel_book_id"
+.note
+  &raquo; use to inquire a particular booking id,
+  the system will verify if Booking ID belongs to HotelCode
+  %br
+  = link_to "sample RQ", "/OTA/POB_HotelBookIDRQ.xml"
+  = link_to "sample RS", "/OTA/POB_HotelBookIDRS.xml"
+%h4 message POB_Top20
+.url=  "http://#{request.host_with_port}/api/top20"
+.note
+  &raquo; use to get top 20 hotels
+  %br
+  = link_to "sample RQ", "/OTA/POB_Top20RQ.xml"
+  = link_to "sample RS", "/OTA/POB_Top20RS.xml"
+%h4 access control
+.note
+  &raquo; POS element must specify valid RequestorID
+  %br
+  &raquo; requestor id can be managed using config/pob.yml
+%h4 encryption
+.note
+  &raquo; You can use anywhere in your XML by adding attribute Encrypt='1' in any element
+  %br
+  &raquo; If you add to element then ALL attributes and text must be encrypted
+  %br
+  &raquo; Note that inner elements do not get decrypted automatically, you must use attribute Encrypt="1" in every element that needs to be decrypted. If element has attributes and text then you must encrypt all attributes as well as text.
+  %div(style='font-weight:bold')
+    Correct
+  = h %Q(<PaymentCard Encrypt="1" CardCode="***encrypt***" CardNumber="***encrypt***" ExpireDate="***encrypt***">)
+  %div(style='font-weight:bold')
+    Incorrect
+  = h %Q(<PaymentCard Encrypt="1" CardCode="VS" CardNumber="***encrypt***" ExpireDate="0506">)
+  %br
+  = link_to "sample", "/OTA/OTA_PingRQEncrypted.xml"
+%h4 message OTA_HotelStayInfoNotifRQ
+.url= "http://#{request.host_with_port}/api/hotel_stay_info_notif"
+.note
+  %ul
+    %li
+      %i
+        unused for now
+    %li must submit when guest check out and end of month
+    %li= h "<StayInfos HotelCode> is used to indicate hotel reporting"
+    %li= h "<RoomRate NumberOfUnits> is used to report number of units stay"
+    %li The RevenueCategoryCode value of 9 indicates this is a Room charge
+    %li The RevenueCategoryCode value of 12 indicates this is a Tax charge
+  

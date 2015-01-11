@@ -1,0 +1,37 @@
+<% rr1 = Rr1.find $xvars[:select_hotel][:hotel_id] %>
+<% rr3 = Rr3.find $xvars[:rr3_id] %>
+<% receipt= Receipt.find $xvars[:receipt_id] %>
+<style type="text/css" media="all">
+  body {padding:20px;}
+  #book {float:left; padding:10px; position:relative; top:-100px;}
+  #no {float:right;padding:10px; position:relative; top:-100px;}
+  #logo {text-align:center;}
+  #head {font-size: 2em; font-weight: bold;}
+</style>
+<div id="logo">
+  <%= image_tag "phuketcity150.png" %>
+</div>
+<div id="book">
+  เล่มที่ <%= rr3.receipt_book %>
+</div>
+<div id="no">
+  เลขที่ <%= rr3.receipt_no %>
+</div>
+<div id="head">
+  ใบเสร็จรับเงิน<br/>
+  องค์การบริหารส่วนจังหวัดภูเก็ต
+</div>
+<div class="right">
+  ที่ทำการ <%= b receipt.section %><br/>
+  วันที่ <%= date_thai Time.now, :date_only=>true, :month_full => true  %>
+</div>
+ได้รับเงินจาก <%= b receipt.payee %><br/>
+เป็นค่า <%= b receipt.item %><br/>
+จำนวน <%= b num_baht(receipt.amount) %> บาท <%= b num_satang(receipt.amount) %> สต.
+( ตัวอักษร <%= b thai_baht(receipt.amount) %>)<br/>
+ไว้เป็นการถูกต้องแล้ว
+<p/>
+<div class="right">
+  (ลงชื่อ) <%= '.'*80 %> ผู้รับเงิน<br/>
+  (ตำแหน่ง) <%= '.'*100 %>
+</div>

@@ -1,0 +1,80 @@
+<!--marquee loop=3>Hello from Songrit</marquee-->
+<% 
+  rr1 = Rr1.find $xvars[:select_hotel][:hotel_id]
+  rr3 = Rr3.new :month=>30.days.ago, :balance_out => 0 
+  pending_fee= rr1.pending_fee || 0
+  pending_qty= rr1.pending_qty || 0
+%>
+<table width="100%">
+  <% fields_for rr3 do |f| %>
+    <tr>
+      <td class="field-name" valign="top">โรงแรม</td>
+      <td colspan='2'>
+        <%= rr1.hotel_name %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field-name" />
+      <td>
+        <%= radio_button_tag :normal, 'y', true  %> ยื่นปกติ
+        <%= radio_button_tag :normal, 'n'  %> ยื่นเพิ่มเติม
+      </td>
+    </tr>
+    <tr>
+      <td class="field-name">ยื่นเพิ่มเติมครั้งที่</td>
+      <td colspan='2'><%= f.text_field :addition, :style=>"width:100px;" %></td>
+    </tr>
+    <tr>
+      <td class="field-name">เดือน</td>
+      <td colspan='2'><%= f.date_select :month, :discard_day=>true, :use_month_names=>THAI_MONTHS, :order=>[:month, :year] %></td>
+    </tr>
+    <tr>
+      <td class="field-name">ลูกหนี้ค่าเช่าห้องพักยกมา ณ ต้นเดือน</td>
+      <td colspan='2' id="balance_in"><%= pending_fee %></td>
+    </tr>
+    <tr>
+      <td class="field-name">จำนวนห้อง / หลัง</td>
+      <td colspan='2' id="balance_in"><%= pending_qty %></td>
+    </tr>
+    <tr>
+      <td class="field-name">ปริมาณและรายได้ค่าเช่าห้องพักเดือนนี้</td>
+      <td colspan='2'><%= f.text_field :balance, :style=>"width:300px;" %></td>
+    </tr>
+    <tr>
+      <td class="field-name">จำนวนห้อง / หลัง</td>
+      <td colspan='2'><%= f.text_field :qty, :style=>"width:100px;" %></td>
+    </tr>
+    <tr>
+      <td class="field-name">ลูกหนี้ค่าเช่าห้องพักยกไปเดือนหน้า</td>
+      <td colspan='2'><%= f.text_field :balance_out, :style=>"width:300px;" %></td>
+    </tr>
+    <tr>
+      <td class="field-name">จำนวนห้อง / หลัง</td>
+      <td colspan='2'><%= f.text_field :qty_out, :style=>"width:100px;" %></td>
+    </tr>
+    <tr>
+      <td class="field-name">ค่าเช่าห้องพักที่เรียกเก็บเดือนนี้</td>
+      <td colspan='2' id='amount' />
+    </tr>
+    <tr>
+      <td class="field-name">ค่าธรรมเนียมที่นำส่ง</td>
+      <td colspan='2' id='fee' />
+    </tr>
+  <% end %>
+</table>
+<%= fix_thai_year %>
+<%= javascript_include_tag "jshashtable-2.1","jquery.numberformatter-1.2.2.min" %>
+<script type="text/javascript" charset="utf-8">
+$('#rr3_balance').change(function() {
+  var amount= parseInt($('#balance_in').text())+parseInt($('#rr3_balance').val())-parseInt($('#rr3_balance_out').val());
+  $('#amount').text($.formatNumber(amount,{format:"#,##0.00"}));
+  var fee= amount/100;
+  $('#fee').text($.formatNumber(fee,{format:"#,##0.00"}));
+});
+$('#rr3_balance_out').change(function() {
+  var amount= parseInt($('#balance_in').text())+parseInt($('#rr3_balance').val())-parseInt($('#rr3_balance_out').val());
+  $('#amount').text($.formatNumber(amount,{format:"#,##0.00"}));
+  var fee= amount/100;
+  $('#fee').text($.formatNumber(fee,{format:"#,##0.00"}));
+})
+</script>
